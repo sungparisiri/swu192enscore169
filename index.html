@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!-- Lock screen to prevent pinch zoom on mobile/Touchpad -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>GE SMART SCORE</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+:root {
+  --green: #6cae9e; 
+  --blue: #8bb7dc; 
+  --dark: #49616a;
+}
+
+html, body {
+  font-family: 'Sarabun', sans-serif; 
+  background: linear-gradient(135deg, #f3fffb, #eef7ff); 
+  min-height: 100vh; 
+  min-height: 100dvh; 
+  overflow-x: hidden;
+  margin: 0;
+  touch-action: manipulation;
+  -webkit-text-size-adjust: 100%;
+}
+
+input, select, textarea, button {
+  font-size: 16px !important; /* Prevent iOS auto-zoom on focus */
+  touch-action: manipulation;
+}
+
+/* =========================
+   LOGIN PAGE
+========================= */
+#loginView {
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
+  background: #edf4f6;
+}
+
+.login-card {
+  width: 420px; 
+  max-width: 90%; 
+  background: #f8f8f8; 
+  border-radius: 28px; 
+  padding: 40px 35px; 
+  text-align: center; 
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+.login-logo {
+  width: 260px; 
+  max-width: 100%; 
+  margin-bottom: 25px;
+}
+
+.login-title {
+  font-size: 2.2rem; 
+  font-weight: 800; 
+  color: #48606a; 
+  line-height: 1.2; 
+  margin-bottom: 8px;
+}
+
+.google-btn {
+  width: fit-content; 
+  border: none; 
+  border-radius: 18px; 
+  padding: 14px; 
+  font-size: 1rem; 
+  font-weight: 700; 
+  color: #fff;
+  background: linear-gradient(90deg, #6cae9e 0%, #8bb7dc 100%); 
+  transition: .25s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.google-btn:hover {
+  transform: translateY(-2px); 
+  box-shadow: 0 10px 24px rgba(0,0,0,.12);
+}
+
+#headerUser {
+  display: flex; 
+  align-items: center; 
+  gap: 10px; 
+  font-size: 0.85rem; 
+  line-height: 1.2;
+}
+
+#headerUser img {
+  width: 38px; 
+  height: 38px; 
+  border-radius: 50%; 
+  object-fit: cover;
+}
+
+.user-meta { line-height: 1.2; }
+
+.student-id {
+  font-size: 0.7rem; 
+  font-weight: 700; 
+  color: #334155;
+}
+
+.header-strip {
+  position: sticky; 
+  top: 0; 
+  z-index: 100; 
+  background: white; 
+  padding: 12px 18px; 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between;
+}
+
+.big-grade {
+  font-size: 3.5rem; 
+  font-weight: 800; 
+  line-height: 1; 
+  background: linear-gradient(135deg, #6cae9e, #8bb7dc); 
+  -webkit-background-clip: text; 
+  -webkit-text-fill-color: transparent;
+}
+
+.status-box {
+  max-width: 420px; 
+  margin: 0 auto 10px; 
+  background: linear-gradient(135deg, #ffffff, #f4fbff); 
+  padding: 12px; 
+  border-radius: 24px;
+}
+
+.data-row {
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  gap: 10px; 
+  padding: 8px 2px; 
+  border-bottom: 1px solid #e2e8f0; 
+  font-size: 0.75rem; 
+  line-height: 1.3;
+}
+
+.data-row span { flex: 4; min-width: 0; word-break: break-word; }
+.data-row b { flex: 0 0 85px; display: block; text-align: center; }
+
+.total-row {
+  background: #eef7ff; 
+  border-radius: 14px; 
+  margin-top: 12px; 
+  border-bottom: none; 
+  min-height: 55px;
+}
+
+.total-row span, .total-row b { 
+  font-size: 0.75rem !important; 
+  line-height: 1.3 !important; 
+}
+
+/* 🌟 Smaller tab size */
+.nav-pills { background: #eef7ff; padding: 4px; border-radius: 16px; }
+.nav-link { 
+  padding: 2px 7px !important; 
+  border-radius: 12px !important; 
+  font-size: 0.6rem; 
+  font-weight: 700; 
+  color: #567; 
+}
+.nav-pills .nav-link.active { 
+  background: linear-gradient(135deg, #6cae9e, #8bb7dc) !important; 
+  color: white !important; 
+}
+
+.badge-ui { padding: 6px 12px; border-radius: 999px; font-size: 0.78rem; font-weight: 700; }
+#mainContent { display: none; }
+
+/* 🌟 Smaller Log out / Refresh button size */
+.logout-btn {
+  border: none; 
+  border-radius: 14px; 
+  padding: 2px 7px; 
+  font-size: 0.4rem; 
+  font-weight: 700;
+  background: linear-gradient(135deg, #6cae9e, #8bb7dc); 
+  color: white; 
+  transition: 0.2s;
+  white-space: nowrap; 
+  flex-shrink: 0;
+}
+
+.logout-btn:hover { 
+  transform: translateY(-2px); 
+  box-shadow: 0 8px 16px rgba(108,174,158,0.24); 
+}
+
+.spinner-border { color: #6cae9e !important; }
+
+.login-alert {
+  margin-top: 18px; 
+  border-radius: 16px; 
+  font-size: 0.8rem; 
+  font-weight: 600; 
+  text-align: left; 
+  display: none; 
+  animation: fadeIn .25s ease; 
+  background: #FFFFFF; 
+  border: 3px solid #E76F2C; 
+  color: #92400E;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN PAGE -->
+<div id="loginView">
+  <div id="loginBox" class="login-card">
+    <img class="login-logo" src="https://drive.google.com/thumbnail?id=1FPkR-OBIGtQp436UMSE3QNxvG9W3EeQh&sz=w1000" alt="SWU Logo">
+    
+    <div class="login-title" style="white-space: nowrap; font-size: clamp(1.6rem, 7vw, 2rem);">
+      Grade Display System
+    </div>
+    <div class="login-title" style="white-space: nowrap; font-size: clamp(1.6rem, 7vw, 2rem); margin-bottom: 28px;">
+      GE SMART SCORE
+    </div>
+
+    <button id="loginBtn" onclick="loginGoogle()" class="google-btn">🔐 Login with @g.swu.ac.th</button>
+    <div id="loginError" class="alert alert-warning login-alert"></div>
+  </div>
+</div>
+
+<!-- GLOBAL HEADER -->
+<div id="globalHeader" class="header-strip" style="display:none;">
+  <div id="headerUser"></div>
+  <div style="display:flex; flex-direction:column; gap:4px;">
+    <button class="logout-btn" onclick="handleLogout()">🚪 Log out</button>
+  </div>
+</div>
+
+<!-- SCORE MAIN CONTENT -->
+<div id="mainContent">
+  <div class="container py-2 px-2" style="max-width:480px;">
+    <div class="bg-white p-2 rounded-4 shadow-sm">
+
+      <ul class="nav nav-pills mb-3">
+        <li class="nav-item"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#tabDash">Dashboard</button></li>
+        <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab1">CLO1</button></li>
+        <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab2">CLO2</button></li>
+        <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab3">CLO3</button></li>
+      </ul>
+
+      <div class="tab-content" id="scoreContent"></div>
+
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Prevent Ctrl + Scroll Zoom -->
+<script>
+document.addEventListener('wheel', function(e) {
+  if (e.ctrlKey) { e.preventDefault(); }
+}, { passive: false });
+
+document.addEventListener('keydown', function(e) {
+  if (e.ctrlKey && (e.key === '=' || e.key === '-' || e.key === '+' || e.key === '0')) {
+    e.preventDefault();
+  }
+});
+</script>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, setPersistence, inMemoryPersistence } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+
+const firebaseConfig = {
+  apiKey:"AIzaSyD1KJD625lxgaK9wKrirrfhOfQ140vPqPM",
+  authDomain:"ge-smart-score.firebaseapp.com",
+  projectId:"ge-smart-score",
+  storageBucket:"ge-smart-score.firebasestorage.app",
+  messagingSenderId:"69973066273",
+  appId:"1:69973066273:web:90cab092a341f15391d960",
+  measurementId:"G-FXC5LGMJTY"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+
+provider.setCustomParameters({prompt:'select_account'});
+
+const GAS_API_URL = "https://script.google.com/macros/s/AKfycbxTfx48l4uF3ZwvCCMZ-GQ1KfamhjbJ6ss6ewutiFsPzY3-I_huBdnJa-wx9tWsBOhn/exec";
+
+let isSigningIn = false;
+let cachedAccessToken = null;
+let currentTab = '#tabDash';
+let scores = {};
+let isLoggingIn = false;
+let authReady = false;
+
+document.addEventListener('click', function(e){
+  const btn = e.target.closest('.nav-link');
+  if(!btn) return;
+  const tabId = btn.getAttribute('data-bs-target');
+  currentTab = tabId;
+  activateTab(tabId);
+});
+
+function switchView(id){
+  document.getElementById('mainContent').style.display = (id === 'mainContent') ? 'block' : 'none';
+  document.getElementById('globalHeader').style.display = (id === 'mainContent') ? 'flex' : 'none';
+}
+
+function fmt(val){
+  if(val === null || val === undefined || val === "") return "";
+  let str = val.toString().trim().toLowerCase();
+  if(str === "true") return '<span style="color:#111827;font-weight:700;">✅ True</span>';
+  if(str === "false") return '<span style="color:#111827;font-weight:700;">❌ False</span>';
+  if(str === "o") return '<span class="badge-ui badge-o">🏆 O</span>';
+  if(str === "s") return '<span class="badge-ui badge-s">✅ S</span>';
+  if(str === "u") return '<span class="badge-ui badge-u">❌ U</span>';
+  if(str === "upskill") return '<span class="badge-ui badge-upskill">🚀 UpSkill</span>';
+  return val;
+}
+
+/* 🌟 Auto-retry fetch function to prevent hanging from Cold Start */
+async function fetchWithRetry(url, options, retries = 2, backoff = 1000) {
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 12000); // Set 12-second timeout
+    
+    const response = await fetch(url, { ...options, signal: controller.signal });
+    clearTimeout(timeoutId);
+    
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    return await response.json();
+  } catch (err) {
+    if (retries > 0) {
+      await new Promise(r => setTimeout(r, backoff));
+      return fetchWithRetry(url, options, retries - 1, backoff * 1.5);
+    }
+    throw err;
+  }
+}
+
+async function loadScore(email){
+  switchView('mainContent');
+
+  document.getElementById('scoreContent').innerHTML = `
+    <div class="text-center py-5">
+      <div class="spinner-border text-success"></div>
+      <div class="mt-2 text-muted small">Loading...</div>
+    </div>
+  `;
+
+  try {
+    const user = auth.currentUser;
+    if (!user) throw new Error("No user logged in");
+
+    const idToken = await user.getIdToken();
+
+    const res = await fetchWithRetry(GAS_API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ idToken: idToken })
+    });
+
+    if(res.success){
+      scores = res.allData;
+      window.subjectCode = (res.subjectInfo || '').trim().substring(0,6);
+
+      document.getElementById('headerUser').innerHTML = `
+        <img src="${user?.photoURL || ''}" alt="Profile">
+        <div class="user-meta">
+          <div class="student-id">${res.studentName || '-'}</div>
+          <div class="student-id">${res.studentId || '-'}</div>
+          <div class="student-id">${(res.subjectInfo || '').substring(0, 10) || '-'}</div>
+          <div class="student-id">${(res.subjectInfo || '').substring(11)}</div>
+        </div>
+      `;
+
+      renderScores();
+    } else {
+      showLoginError(res.msg);
+      logout().catch(err => console.error('Sign out error:', err));
+    }
+
+  } catch (err) {
+    console.error('Fetch error:', err);
+    showLoginError('Server response too slow. Please click Refresh or try logging in again.');
+  }
+}
+
+async function handleLogout(){
+  try {
+    await logout();
+    scores = {};
+    currentTab = '#tabDash';
+    document.getElementById('headerUser').innerHTML = '';
+    document.getElementById('scoreContent').innerHTML = '';
+    showLoggedOutView();
+  } catch (err) {
+    showLoginError('Logout failed. Please refresh the page and try again.');
+  }
+}
+
+function refreshCurrentPage(){
+  const user = auth.currentUser;
+  if(user) loadScore(user.email);
+}
+
+function getR(c, label=null){
+  if(!scores[c]) return "";
+  const header = (label || scores[c].label || '').toString().trim();
+  if(header === "") return "";
+  return `
+    <div class="data-row">
+      <span>${header}</span>
+      <b>${fmt(scores[c].value)}</b>
+    </div>
+  `;
+}
+
+function isTab(tab){
+  return currentTab === tab ? 'show active' : '';
+}
+
+function renderScores(){
+  const noticeMsg = `
+    <div class="mt-2 text-start" style="background:#ffffff; color:#ad1457; font-size:0.78rem; font-weight:600; line-height:1.4; padding:8px 0;">
+      *If scores for any assignment do not appear as scheduled, please contact your instructor.
+    </div>
+  `;
+
+  document.getElementById('scoreContent').innerHTML = `
+    <div class="tab-pane fade ${isTab('#tabDash')}" id="tabDash">
+      <div class="text-center">
+        <div class="small text-muted" style="font-size:0.8rem;">Grade ${window.subjectCode || ''}</div>
+        <div class="big-grade">${scores['CT']?.value || '-'}</div>
+      </div>
+      <div class="status-box">
+        <h6 class="fw-bold mb-2">📊 Class Attendance</h6>
+        ${getR('G')}${getR('I')}${getR('CH')}
+      </div>
+      <div class="status-box">
+        <h6 class="fw-bold mb-2">🎯 Grade CLO</h6>
+        ${getR('CO')}${getR('CP')}${getR('CQ')}
+      </div>
+    </div>
+
+    <div class="tab-pane fade ${isTab('#tab1')}" id="tab1">
+      <div class="text-center">
+        <div class="small text-muted" style="font-size:0.8rem;">Grade CLO1</div>
+        <div class="big-grade" style="font-size:3.5rem;">${scores['CO']?.value || '-'}</div>
+      </div>
+      <div class="status-box">
+        <h6 class="fw-bold mb-2">📝 Scores</h6>
+        ${['J','K','L','M','N','O','P','Q','R','S','T','U'].map(c => getR(c)).join('')}
+        <div class="data-row fw-bold total-row">
+          <span>${scores['V']?.label || 'Total CLO1'}</span>
+          <b>${fmt(scores['V']?.value || '-')}</b>
+        </div>
+      </div>
+      ${noticeMsg}
+    </div>
+
+    <div class="tab-pane fade ${isTab('#tab2')}" id="tab2">
+      <div class="text-center">
+        <div class="small text-muted" style="font-size:0.8rem;">Grade CLO2</div>
+        <div class="big-grade" style="font-size:3.5rem;">${scores['CP']?.value || '-'}</div>
+      </div>
+      <div class="status-box">
+        <h6 class="fw-bold mb-3">📝 Scores</h6>
+        ${['Y','Z','AA','AB','AC','AD','AE','AF','AG','AH','AI','AJ'].map(c => getR(c)).join('')}
+        <div class="data-row fw-bold total-row">
+          <span>${scores['AK']?.label || 'Total CLO2'}</span>
+          <b>${fmt(scores['AK']?.value || '-')}</b>
+        </div>
+      </div>
+      ${noticeMsg}
+    </div>
+
+    <div class="tab-pane fade ${isTab('#tab3')}" id="tab3">
+      <div class="text-center">
+        <div class="small text-muted" style="font-size:0.8rem;">Grade CLO3</div>
+        <div class="big-grade" style="font-size:3.5rem;">${scores['CQ']?.value || '-'}</div>
+      </div>
+      <div class="status-box">
+        <h6 class="fw-bold mb-3">📝 Scores</h6>
+        ${['AN','AO','AP','AQ','AR','AS','AT','AU','AV','AW','AX','AY'].map(c => getR(c)).join('')}
+        <div class="data-row fw-bold total-row">
+          <span>${scores['AZ']?.label || 'Total CLO3'}</span>
+          <b>${fmt(scores['AZ']?.value || '-')}</b>
+        </div>
+      </div>
+      ${noticeMsg}
+    </div>
+  `;
+
+  activateTab(currentTab || '#tabDash');
+}
+
+function activateTab(tabId){
+  document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('show','active'));
+  document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+
+  const tab = document.querySelector(tabId);
+  if(tab) tab.classList.add('show','active');
+
+  const btn = document.querySelector(`[data-bs-target="${tabId}"]`);
+  if(btn) btn.classList.add('active');
+}
+
+function showLoginError(message){
+  const box = document.getElementById("loginError");
+  box.innerHTML = `<div style="padding:4px;">${message}</div>`;
+  box.style.display = "block";
+}
+
+function hideLoginError(){
+  document.getElementById("loginError").style.display="none";
+}
+
+const initAuth = (onAuthSuccess, onAuthFailure) => {
+  return onAuthStateChanged(auth, async user => {
+    isSigningIn = false;
+    isLoggingIn = false;
+    if (!user) {
+      cachedAccessToken = null;
+      if (onAuthFailure) onAuthFailure();
+      return;
+    }
+
+    const email = (user.email || '').trim().toLowerCase();
+    if (!email.endsWith('@g.swu.ac.th')) {
+      await logout();
+      showLoginError('Please log in using an @g.swu.ac.th email only.');
+      if (onAuthFailure) onAuthFailure();
+      return;
+    }
+
+    if (onAuthSuccess) onAuthSuccess(user, cachedAccessToken);
+  });
+};
+
+const googleSignIn = async () => {
+  try {
+    isSigningIn = true;
+    const result = await signInWithPopup(auth, provider);
+    const credential = GoogleAuthProvider.credentialFromResult(result);
+    cachedAccessToken = credential?.accessToken || null;
+    return { user: result.user, accessToken: cachedAccessToken };
+  } finally {
+    isSigningIn = false;
+  }
+};
+
+const logout = async () => {
+  await signOut(auth);
+  cachedAccessToken = null;
+};
+
+function showLoggedOutView(){
+  document.getElementById('mainContent').style.display = 'none';
+  document.getElementById('globalHeader').style.display = 'none';
+  document.getElementById('loginView').style.display = 'flex';
+}
+
+async function loginGoogle(){
+  if (isLoggingIn || isSigningIn) return;
+  if (!authReady) {
+    showLoginError('Login system is not ready yet. Please wait a moment and try again.');
+    return;
+  }
+
+  isLoggingIn = true;
+  hideLoginError();
+
+  try {
+    const result = await googleSignIn();
+    const email = (result?.user?.email || '').trim().toLowerCase();
+    if (!email.endsWith('@g.swu.ac.th')) {
+      await logout();
+      showLoginError('Please log in using an @g.swu.ac.th email only.');
+    }
+  } catch (err) {
+    showLoginError('Login failed. Please try again.');
+  } finally {
+    isLoggingIn = false;
+  }
+}
+
+async function initializeAuth(){
+  try {
+    await setPersistence(auth, inMemoryPersistence);
+    if (auth.currentUser) await logout();
+    authReady = true;
+
+    initAuth(
+      (user) => {
+        document.getElementById('loginView').style.display = 'none';
+        loadScore(user.email);
+      },
+      () => showLoggedOutView()
+    );
+  } catch (err) {
+    authReady = false;
+    showLoginError(`System initialization error: ${err.message}`);
+  }
+}
+
+Object.assign(window, { loginGoogle, handleLogout, refreshCurrentPage });
+initializeAuth();
+</script>
+</body>
+</html>
